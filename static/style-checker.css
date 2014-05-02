@@ -1,0 +1,199 @@
+body {
+    font-family:'Trebuchet MS', 'Verdana', sans-serif;
+}
+
+div.header, h1 {
+    font-size:140%;
+    font-weight:bold;
+    text-align:center;
+    width:100%;
+    margin:auto;
+    padding:10px 0;
+}
+
+h1 {
+	font-size:110%;
+	padding:10px 0 0 0;
+}
+
+div#subheadline {
+    font-size:85%;
+    padding:0 0 8px 0;
+    text-align:center;
+    width:100%;
+    margin:auto;
+}
+
+div.main-content {
+    text-align:center;
+    margin:0 auto;
+    width:100%;
+}
+
+table.inner-table {
+    margin: .5em auto;
+    border: 1px solid #AAA;
+    border-collapse: collapse;
+    /* width:100%; */
+    font-size:90%;
+}
+.inner-table th, .inner-table td {
+    border: 1px solid #AAA;
+    padding: 0.3em 20px 0.3em 0.3em;
+    /*padding: 0.3em; */
+}
+.inner-table th.header {
+    background: #F2F2F2;
+    text-align: center;
+    padding:0.3em !important;
+}
+.inner-table th, .inner-table td {
+    text-align: left;
+}
+/*
+table.inner-table tr.even {
+    background:#FFFFFF;
+}
+table.inner-table tr.odd {
+    background:#E3F2FF;
+}
+*/
+
+/* Only for things inside the <form> */
+form table.inner-table {
+    width:auto !important;
+}
+
+form .inner-table td {
+    border: 1px solid #AAA;
+    /*padding: 0.3em;*/
+}
+
+th.submit {
+    text-align:center;
+    padding:0.3em !important;
+}
+
+input#submit {
+    width:100%;
+}
+
+input#username {
+    width:100%;
+}
+
+table.outer-table {
+    width:auto;
+    margin:auto;
+    text-align:center;
+}
+
+div#footer {
+    font-size:85%;
+    text-align:center;
+    width:100%;
+    margin:auto;
+    padding:5px 0;
+}
+
+div#footer a, div#footer a:hover, div#footer a:link, div#footer a:visited {
+    color:#000 !important;
+}
+
+div#footer div#redirect-info { padding:0 0 10px 0; }
+
+div#footer div#meta-info { font-size:85%; }
+
+div#main-title a, div#main-title a:hover, div#main-title a:link, div#main-title a:visited {
+    color:#000 !important;
+}
+
+option { width:100%; }
+
+input#go-button { margin-left:5px; }
+
+/* Tablesorter shit */
+/* tables */
+table.tablesorter {
+	font-family:arial;
+	background-color: #CDCDCD;
+	margin:10px 0 10px;
+	font-size: 8pt;
+	width: 100%;
+	text-align: left;
+}
+table.tablesorter thead tr th, table.tablesorter tfoot tr th {
+	background-color: #e6EEEE;
+	border: 1px solid #FFF;
+	font-size: 8pt;
+	padding: 4px;
+}
+table.tablesorter thead tr .header {
+	background-image: url(bg.gif);
+	background-repeat: no-repeat;
+	background-position: center right;
+	cursor: pointer;
+}
+table.tablesorter tbody td {
+	color: #3D3D3D;
+	padding: 4px;
+	background-color: #FFF;
+	vertical-align: top;
+}
+table.tablesorter tbody tr.odd td {
+	background-color:#F0F0F6;
+}
+table.tablesorter thead tr .headerSortUp {
+	background-image: url(asc.gif);
+}
+table.tablesorter thead tr .headerSortDown {
+	background-image: url(desc.gif);
+}
+table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSortUp {
+	background-color: #8dbdd8;
+}
+
+.ck-results tr.even {
+    background:#FFFFFF;
+}
+.ck-results tr.odd td{
+    background:#E3F2FF;
+}
+
+.ck-results {
+    width:80%;
+}
+
+.ck-timestamp-column {
+	width:110px;
+}
+
+td#input-cell {
+    text-align:center;
+    padding:.3em !important;
+}
+
+a.redirect {
+    font-style:italic;
+}
+
+a {
+	text-decoration: none;
+	color: #002bb8;
+	background: none;
+}
+a:visited {
+	color: #5a3696;
+}
+a:active {
+	color: #faa700;
+}
+a:hover {
+	text-decoration: underline;
+}
+a.red {
+	color: #ba0000;
+}
+a.red:visited {
+	color: #a55858;
+}
