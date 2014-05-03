@@ -315,9 +315,9 @@ You didn't specify an appropriate database name.
 </div>
 </div>
 </body>
-</html>'''
+</html>
+'''
     return TEXT
 
 if __name__ == '__main__':
     app.run(debug=True)
-
