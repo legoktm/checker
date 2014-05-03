@@ -128,9 +128,9 @@ def get_page_status(cursor, db, page_namespace, page):
 @app.route('/')
 def main():
     TEXT = ''
-    # Pick a db; make enwikisource_p the default
+    # Pick a db; make enwikisource the default
     if request.args.get('db') is not None:
-        db = request.args.get('db')
+        db = request.args.get('db').replace('_p', '')
     else:
         db = 'enwikisource'
 
