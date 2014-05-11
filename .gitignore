@@ -2,3 +2,5 @@
 venv/
 .*
 *.log
+testing/
+*.my.cnf
