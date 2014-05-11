@@ -16,7 +16,9 @@ my_cnf = os.path.expanduser('~/replica.my.cnf')
 
 
 def database_list():
-    conn = oursql.connect(host='enwiki.labsdb', db='meta_p', read_default_file=my_cnf)
+    conn = oursql.connect(host='enwiki.labsdb',
+                          db='meta_p',
+                          read_default_file=my_cnf)
     cursor = conn.cursor()
     cursor.execute('''
     /* checker.py database_list */
@@ -33,8 +35,8 @@ def database_list():
 
 def choose_host_and_domain(db):
     conn = oursql.connect(host='enwiki.labsdb',
-                           db='meta_p',
-                           read_default_file=my_cnf)
+                          db='meta_p',
+                          read_default_file=my_cnf)
     cursor = conn.cursor()
     cursor.execute('''
     /* checker.py choose_host_and_domain */
@@ -43,11 +45,15 @@ def choose_host_and_domain(db):
     FROM wiki
     WHERE dbname = ?;
     ''', (db,))
-    for row in cursor.fetchall():
-        domain = '%s' % row[0]
+    result = cursor.fetchall()
     cursor.close()
     conn.close()
-    return {'host': db + '.labsdb', 'domain': domain}
+    if result:
+        for row in result:
+            domain = '%s' % row[0]
+        if domain:
+            return {'host': db + '.labsdb', 'domain': domain}
+    return None
 
 
 def get_extension_namespaces(domain):
@@ -59,13 +65,17 @@ def get_extension_namespaces(domain):
         'format': 'json'
     }
     query_url = '%s/w/api.php?%s' % (domain, urllib.urlencode(params))
-    app.logger.debug(query_url)
     url_contents = urllib.urlopen(query_url).read()
     parsed_content = json.loads(url_contents)
-    page_namespace = parsed_content['query']['proofreadnamespaces']['page']['id']
-    index_namespace = parsed_content['query']['proofreadnamespaces']['index']['id']
+    try:
+        page_namespace = parsed_content['query']['proofreadnamespaces']['page']['id']
+        index_namespace = parsed_content['query']['proofreadnamespaces']['index']['id']
+    except KeyError:
+        return None
     names = parsed_content['query']['namespaces']
-    return {'page_namespace': page_namespace, 'index_namespace': index_namespace, 'names': names}
+    return {'page_namespace': page_namespace,
+            'index_namespace': index_namespace,
+            'names': names}
 
 
 def get_page_links(cursor, db, page_namespace, index_namespace, index_page):
@@ -86,7 +96,6 @@ def get_page_links(cursor, db, page_namespace, index_namespace, index_page):
     ''', (page_namespace, index_namespace, index_page))
     for row in cursor.fetchall():
         pl_title = row[0]
-        #app.logger.debug(row[0])
         try:
             sort_key = int(unicode(row[0].rsplit('/', 1)[1].decode('utf-8')))
         except IndexError:
@@ -104,10 +113,10 @@ def get_page_status(cursor, db, page_namespace, page):
     FROM templatelinks
     WHERE tl_namespace = ?
     AND tl_title = ?;
-    ''', (page_namespace, page))
-    transclusion_count = cursor.fetchone()
+    ''', (page_namespace, page.decode('utf-8')))
+    transclusion_count = cursor.fetchall()
     if transclusion_count:
-        page_status['transclusion_count'] = transclusion_count[0]        
+        page_status['transclusion_count'] = transclusion_count[0]
     # Then check if the page has been proofread
     cursor.execute('''
     /* checker.py get_page_status */
@@ -119,16 +128,17 @@ def get_page_status(cursor, db, page_namespace, page):
     WHERE page_id = cl_from
     AND page_namespace = ?
     AND page_title = ?;
-    ''', (page_namespace, page))
-    proofread_status = cursor.fetchone()
+    ''', (page_namespace, page.decode('utf-8')))
+    proofread_status = cursor.fetchall()
     if proofread_status:
-        page_status['proofread_status'] = proofread_status[0].lower().replace('_', ' ')
+        page_status['proofread_status'] = proofread_status[0][0].lower().replace('_', ' ')
     return page_status
 
 
 @app.route('/')
 def main():
     TEXT = ''
+    host = db = domain = extension_dict = None
     # Pick a db; make enwikisource the default
     if request.args.get('db') is not None:
         db = request.args.get('db').replace('_p', '')
@@ -137,15 +147,16 @@ def main():
 
     # All right, now let's pick a host and domain
     connection_props = choose_host_and_domain(db)
-    host = connection_props['host']
-    domain = connection_props['domain']
-
-    # Run this awful function to grab the namespace names that are required.
-    extension_dict = get_extension_namespaces(domain)
-    page_namespace = extension_dict['page_namespace']
-    index_namespace = extension_dict['index_namespace']
-    page_namespace_name = extension_dict['names'][str(page_namespace)]['*']
-    index_namespace_name = extension_dict['names'][str(index_namespace)]['*']
+    if connection_props:
+        host = connection_props['host']
+        domain = connection_props['domain']
+        if domain:
+            extension_dict = get_extension_namespaces(domain)
+        if extension_dict:
+            page_namespace_id = extension_dict['page_namespace']
+            index_namespace_id = extension_dict['index_namespace']
+            page_namespace_name = extension_dict['names'][str(page_namespace_id)]['*']
+            index_namespace_name = extension_dict['names'][str(index_namespace_id)]['*']
 
     if 'title' in request.args:
         title = request.args.get('title')
@@ -165,49 +176,38 @@ def main():
     no_rows = []
 
     tables = []
-    if host is not None and title:
+    if host is not None and title and extension_dict:
         conn = oursql.connect(host=host, db=db+'_p', read_default_file=my_cnf)
         cursor = conn.cursor()
         # Eliminate LTR and RTL marks and strip extra whitespace.
         title = re.sub(r'(\xe2\x80\x8e|\xe2\x80\x8f)', '', title).strip(' ')
         # Prep the title for the query (replace spaces and strip namespace name if present).
         clean_title = title.replace(' ', '_').split(index_namespace_name+':', 1)[1]
-        page_links = get_page_links(cursor, db, page_namespace, index_namespace, clean_title)
+        page_links = get_page_links(cursor, db+'_p', page_namespace_id, index_namespace_id, clean_title)
         if page_links:
             # Sort!
             page_links = sorted(page_links, key=operator.itemgetter(1))
             for item in page_links:
                 page_link = item[0]
                 sort_key = item[1]
-                status = get_page_status(cursor, db, page_namespace, page_link)
+                status = get_page_status(cursor, db+'_p', page_namespace_id, page_link)
+                table_row = '''\
+<tr>
+<td>
+<a href="%s/wiki/%s">%s</a>\
+</td>
+<td>
+%s
+</td>
+</tr>''' % (domain,
+            '%s:%s' % (urllib.quote(page_namespace_name.encode('utf-8')),
+                       urllib.quote(page_link.decode('utf-8').encode('utf-8'))),
+            cgi.escape('%s:%s' % (page_namespace_name, page_link.decode('utf-8').replace('_', ' ')), quote=True),
+            status['proofread_status'].decode('utf-8'))
                 if status['transclusion_count'] > 0:
-                    yes_table_row = '''\
-<tr>
-<td>
-<a href="//%s/wiki/%s">%s</a>\
-</td>
-<td>
-%s
-</td>
-</tr>''' % (domain,
-                urllib.quote('%s:%s' % (page_namespace_name, page_link)),
-                cgi.escape('%s:%s' % (page_namespace_name, page_link.replace('_', ' ')), quote=True),
-                status['proofread_status'])
-                    yes_rows.append(yes_table_row)
+                    yes_rows.append(table_row)
                 else:
-                    no_table_row = '''\
-<tr>
-<td>
-<a href="//%s/wiki/%s">%s</a>\
-</td>
-<td>
-%s
-</td>
-</tr>''' % (domain,
-                urllib.quote('%s:%s' % (page_namespace_name, page_link)),
-                cgi.escape('%s:%s' % (page_namespace_name, page_link.replace('_', ' ')), quote=True),
-                status['proofread_status'])
-                    no_rows.append(no_table_row)
+                    no_rows.append(table_row)
         tables.append(yes_rows)
         tables.append(no_rows)
         cursor.close()
@@ -244,7 +244,7 @@ $(document).ready(function()
 '''
 
     if title:
-        if db and host is not None and title:
+        if db and host is not None and title and extension_dict:
             TEXT += '<div id="ck-tables-wrapper">'
             count = 0
             for table in tables:
