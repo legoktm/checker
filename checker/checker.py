@@ -59,7 +59,7 @@ def get_extension_namespaces(domain):
         'format': 'json'
     }
     query_url = '%s/w/api.php?%s' % (domain, urllib.urlencode(params))
-    app.logger.error(query_url)
+    app.logger.debug(query_url)
     url_contents = urllib.urlopen(query_url).read()
     parsed_content = json.loads(url_contents)
     page_namespace = parsed_content['query']['proofreadnamespaces']['page']['id']
@@ -86,8 +86,9 @@ def get_page_links(cursor, db, page_namespace, index_namespace, index_page):
     ''', (page_namespace, index_namespace, index_page))
     for row in cursor.fetchall():
         pl_title = row[0]
+        #app.logger.debug(row[0])
         try:
-            sort_key = int(row[0].rsplit('/', 1)[1])
+            sort_key = int(unicode(row[0].rsplit('/', 1)[1].decode('utf-8')))
         except IndexError:
             sort_key = 1
         page_links.append([pl_title, sort_key])

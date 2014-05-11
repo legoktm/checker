@@ -1,23 +1,21 @@
 #!/data/project/checker/venv/bin/python
-from flup.server.fcgi import WSGIServer
-from checker import app
-app.debug = True
-from flask import request
+import flup.server.fcgi
+import werkzeug.exceptions
+import werkzeug.wsgi
 
-import time
-import logging
-from logging import FileHandler
-logger = FileHandler('error.log')
-app.logger.setLevel(logging.DEBUG)
-app.logger.addHandler(logger)
-app.logger.debug(u"Flask server started " + time.asctime())
+import checker
 
+static_routes = {'/static': '/data/project/checker/static'}
+app_routes = {'/': checker.app}
 
-@app.after_request
-def write_access_log(response):
-    app.logger.debug(u"%s %s -> %s" % (time.asctime(), request.path, response.status_code))
-    return response
+try:
+  import testing.checker
+except ImportError:
+  app_routes['/testing'] = testing.checker.app
+else:
+  app_routes['/testing'] = checker.app
 
-if __name__ == '__main__':
-    WSGIServer(app).run()
-
+default_handler = werkzeug.exceptions.NotFound
+static = werkzeug.wsgi.SharedDataMiddleware(default_handler, static_routes)
+app = werkzeug.wsgi.DispatcherMiddleware(static, app_routes)
+flup.server.fcgi.WSGIServer(app).run()
