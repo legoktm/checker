@@ -116,7 +116,7 @@ def get_page_status(cursor, db, page_namespace, page):
     ''', (page_namespace, page.decode('utf-8')))
     transclusion_count = cursor.fetchall()
     if transclusion_count:
-        page_status['transclusion_count'] = transclusion_count[0]
+        page_status['transclusion_count'] = int(transclusion_count[0][0])
     # Then check if the page has been proofread
     cursor.execute('''
     /* checker.py get_page_status */
