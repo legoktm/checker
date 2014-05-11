@@ -227,8 +227,7 @@ var extracted_data = function(node)
         var text = node.innerText || node.textContent
         return text.substring(text.lastIndexOf('/')+1);
 }
-$(document).ready(function()
-{
+jQuery( document ).ready(function( $ ) {
         $('input.focus').focus();
         $('.ck-results').tablesorter(
                 {widgets: ['zebra'],
