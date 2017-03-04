@@ -9,11 +9,11 @@ static_routes = {'/static': '/data/project/checker/static'}
 app_routes = {'/': checker.app}
 
 try:
-  import testing.checker
+    import testing.checker
 except ImportError:
-  app_routes['/testing'] = testing.checker.app
+    app_routes['/testing'] = testing.checker.app
 else:
-  app_routes['/testing'] = checker.app
+    app_routes['/testing'] = checker.app
 
 default_handler = werkzeug.exceptions.NotFound
 static = werkzeug.wsgi.SharedDataMiddleware(default_handler, static_routes)
