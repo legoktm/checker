@@ -12,8 +12,8 @@ div.header, h1 {
 }
 
 h1 {
-	font-size:110%;
-	padding:10px 0 0 0;
+    font-size:110%;
+    padding:10px 0 0 0;
 }
 
 div#subheadline {
@@ -115,42 +115,42 @@ input#go-button { margin-left:5px; }
 /* Tablesorter shit */
 /* tables */
 table.tablesorter {
-	font-family:arial;
-	background-color: #CDCDCD;
-	margin:10px 0 10px;
-	font-size: 8pt;
-	width: 100%;
-	text-align: left;
+    font-family:arial;
+    background-color: #CDCDCD;
+    margin:10px 0 10px;
+    font-size: 8pt;
+    width: 100%;
+    text-align: left;
 }
 table.tablesorter thead tr th, table.tablesorter tfoot tr th {
-	background-color: #e6EEEE;
-	border: 1px solid #FFF;
-	font-size: 8pt;
-	padding: 4px;
+    background-color: #e6EEEE;
+    border: 1px solid #FFF;
+    font-size: 8pt;
+    padding: 4px;
 }
 table.tablesorter thead tr .header {
-	background-image: url(bg.gif);
-	background-repeat: no-repeat;
-	background-position: center right;
-	cursor: pointer;
+    background-image: url(bg.gif);
+    background-repeat: no-repeat;
+    background-position: center right;
+    cursor: pointer;
 }
 table.tablesorter tbody td {
-	color: #3D3D3D;
-	padding: 4px;
-	background-color: #FFF;
-	vertical-align: top;
+    color: #3D3D3D;
+    padding: 4px;
+    background-color: #FFF;
+    vertical-align: top;
 }
 table.tablesorter tbody tr.odd td {
-	background-color:#F0F0F6;
+    background-color:#F0F0F6;
 }
 table.tablesorter thead tr .headerSortUp {
-	background-image: url(asc.gif);
+    background-image: url(asc.gif);
 }
 table.tablesorter thead tr .headerSortDown {
-	background-image: url(desc.gif);
+    background-image: url(desc.gif);
 }
 table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSortUp {
-	background-color: #8dbdd8;
+    background-color: #8dbdd8;
 }
 
 .ck-results tr.even {
@@ -165,7 +165,7 @@ table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSo
 }
 
 .ck-timestamp-column {
-	width:110px;
+    width:110px;
 }
 
 td#input-cell {
@@ -178,22 +178,22 @@ a.redirect {
 }
 
 a {
-	text-decoration: none;
-	color: #002bb8;
-	background: none;
+    text-decoration: none;
+    color: #002bb8;
+    background: none;
 }
 a:visited {
-	color: #5a3696;
+    color: #5a3696;
 }
 a:active {
-	color: #faa700;
+    color: #faa700;
 }
 a:hover {
-	text-decoration: underline;
+    text-decoration: underline;
 }
 a.red {
-	color: #ba0000;
+    color: #ba0000;
 }
 a.red:visited {
-	color: #a55858;
+    color: #a55858;
 }
