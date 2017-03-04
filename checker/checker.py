@@ -25,7 +25,8 @@ def database_list():
     SELECT
       dbname
     FROM wiki
-    WHERE is_closed = 0;
+    WHERE is_closed = 0
+    ORDER BY dbname ASC;
     ''')
     databases = cursor.fetchall()
     cursor.close()
