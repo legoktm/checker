@@ -2,8 +2,6 @@
 # Public domain; MZMcBride, 2011; Legoktm, 2014
 
 from flask import Flask, request, render_template
-import html
-import urllib.parse
 import re
 import requests
 import operator
