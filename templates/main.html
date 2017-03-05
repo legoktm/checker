@@ -24,10 +24,75 @@ jQuery( document ).ready(function( $ ) {
 </head>
 <body>
 <div class="header" id="main-title"><a href="{{url_for('main')}}" title="checker">checker</a></div>
-{{ text }}
+{% if error %}
+<pre>{{ error }}</pre>
+{% elif show_form %}
+<form action="{{url_for('main')}}" method="get">
+    <table id="input" class="inner-table">
+        <tr>
+            <th colspan="2" class="header">Input index title below.</th>
+        </tr>
+        <tr>
+            <th>Database</th>
+            <th><select id="database" name="db">
+                {% for db in databases %}
+                    {% if db == selected_db %}
+                    <option value="{{db}}" selected="selected">{{db}}</option>
+                    {% else %}
+                    <option value="{{db}}">{{db}}</option>
+                    {% endif %}
+                {% endfor %}
+            </select></th>
+        </tr>
+        <tr>
+            <td colspan="2" id="input-cell">
+                <input class="focus" id="input" name="title" size="50" />
+                <input id="go-button" type="submit" value="Go" />
+            </td>
+        </tr>
+    </table>
+</form>
+{% else %}
+<div id="ck-tables-wrapper">
+    <h1 class="header" id="Transcluded"> Transcluded to main namespace </h1>
+    <table class="ck-results inner-table">
+        <thead>
+            <tr>
+            <th class="header" id="ck-page-column">Page</th>
+            <th class="header" id="ck-status-column">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for row in yes_rows %}
+            <tr>
+                <td><a href="{{row.domain}}/wiki/{{row.ns}}:{{row.title}}">{{row.ns}}:{{row.title}}</a></td>
+                <td>{{row.status}}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <h1 class="header" id="Not transcluded">Not transcluded to main namespace </h1>
+    <table class="ck-results inner-table">
+        <thead>
+            <tr>
+            <th class="header" id="ck-page-column">Page</th>
+            <th class="header" id="ck-status-column">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for row in no_rows %}
+            <tr>
+                <td><a href="{{row.domain}}/wiki/{{row.ns}}:{{row.title}}">{{row.ns}}:{{row.title}}</a></td>
+                <td>{{row.status}}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
 <div id="footer">
 <div id="meta-info">
-<a href="https://github.com/legoktm/checker" title="source code">public domain</a>&nbsp;<b>&middot;</b>&nbsp;\
+<a href="https://github.com/legoktm/checker" title="source code">public domain</a>&nbsp;<b>&middot;</b>&nbsp;
 <a href="https://meta.wikimedia.org/w/index.php?title=User_talk:MZMcBride&action=edit&section=new" title="Report a bug">bugs</a>
 </div>
 </div>

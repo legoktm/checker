@@ -27,7 +27,8 @@ def database_list():
     databases = cursor.fetchall()
     cursor.close()
     conn.close()
-    return [database[0] for database in databases]
+    for database in databases:
+        yield database[0].decode()
 
 
 def choose_host_and_domain(db):
@@ -135,7 +136,6 @@ def get_page_status(cursor, db, page_namespace, page):
 
 @app.route('/')
 def main():
-    TEXT = ''
     host = db = domain = extension_dict = None
     # Pick a db; make enwikisource the default
     if request.args.get('db') is not None:
@@ -161,19 +161,11 @@ def main():
     else:
         title = ''
 
-    yes_table = '''\
-<table id="ck-yes-table">
-%s
-</table>'''
     yes_rows = []
 
-    no_table = '''\
-<table id="ck-no-table">
-%s
-</table>'''
     no_rows = []
 
-    tables = []
+    error = None
     if host is not None and title and extension_dict:
         conn = wmflabs.connect(db)
         cursor = conn.cursor()
@@ -187,96 +179,38 @@ def main():
             page_links = sorted(page_links, key=operator.itemgetter(1))
             for item in page_links:
                 page_link = item[0]
-                sort_key = item[1]
                 status = get_page_status(cursor, db+'_p', page_namespace_id, page_link)
-                table_row = '''\
-<tr>
-<td>
-<a href="%s/wiki/%s">%s</a>\
-</td>
-<td>
-%s
-</td>
-</tr>''' % (domain,
-            '%s:%s' % (urllib.parse.quote(page_namespace_name),
-                       urllib.parse.quote(page_link)),
-            html.escape('%s:%s' % (page_namespace_name, page_link.replace('_', ' ')), quote=True),
-            status['proofread_status'])
+                table_row = {
+                    'domain': domain,
+                    'ns': page_namespace_name,
+                    'title': page_link,
+                    'status': status['proofread_status']
+                }
                 if status['transclusion_count'] > 0:
                     yes_rows.append(table_row)
                 else:
                     no_rows.append(table_row)
-        tables.append(yes_rows)
-        tables.append(no_rows)
         cursor.close()
         conn.close()
 
+    show_form = False
     if title:
-        if db and host is not None and title and extension_dict:
-            TEXT += '<div id="ck-tables-wrapper">'
-            count = 0
-            for table in tables:
-                if count == 0:
-                    TEXT += '<h1 class="header" id="Transcluded"> Transcluded to main namespace </h1>'
-                else:
-                    TEXT += '<h1 class="header" id="Not transcluded"> Not transcluded to main namespace </h1>'
-                TEXT += '''\
-<table class="ck-results inner-table">
-<thead>
-<tr>
-<th class="header" id="ck-page-column">Page</th>
-<th class="header" id="ck-status-column">Status</th>
-</tr>
-</thead>
-<tbody>
-%s
-</tbody>
-</table>''' % ('\n'.join(table))
-                count += 1
-            TEXT += '</div>'
-        else:
-            TEXT += '''\
-<pre>
-There was some sort of error. Sorry. :-(
-</pre>'''
-
+        if not (db and host is not None and title and extension_dict):
+            error = 'There was some sort of error. Sorry. :-('
     elif host is None:
-        TEXT += '''\
-<pre>
-You didn't specify an appropriate database name.
-</pre>'''
-
+        error = "You didn't specify an appropriate database name."
     else:
-        TEXT += '''\
-<form action="/checker/" method="get">
-<table id="input" class="inner-table">
-<tr>
-<th colspan="2" class="header">Input index title below.</th>
-</tr>
-<tr>
-<th>Database</th>
-<th>
-<select id="database" name="db">'''
-        for i in database_list():
-            if i == '%s' % db:
-                TEXT += '''\
-<option value="%s" selected="selected">%s</option>''' % (i, i)
-            else:
-                TEXT += '''\
-<option value="%s">%s</option>''' % (i, i)
-        TEXT += '''\
-</select>
-</th>
-</tr>
-<tr>
-<td colspan="2" id="input-cell">
-<input class="focus" id="input" name="title" size="50" /><input id="go-button" type="submit" value="Go" />
-</td>
-</tr>
-</table>
-</form>'''
+        show_form = True
 
-    return render_template('main.html', text=TEXT)
+    return render_template(
+        'main.html',
+        error=error,
+        yes_rows=yes_rows,
+        no_rows=no_rows,
+        show_form=show_form,
+        databases=database_list(),
+        selected_db=db
+    )
 
 if __name__ == '__main__':
     app.run(debug=True)
