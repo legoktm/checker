@@ -276,7 +276,7 @@ You didn't specify an appropriate database name.
 </table>
 </form>'''
 
-    return TEXT
+    return render_template('main.html', text=TEXT)
 
 if __name__ == '__main__':
     app.run(debug=True)
