@@ -2,9 +2,9 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-<link rel="stylesheet" href="/checker/static/style-checker.css" type="text/css" />
-<script type="text/javascript" src="/checker/static/jquery-1.3.2.min.js"></script>
-<script type="text/javascript" src="/checker/static/jquery.tablesorter.js"></script>
+<link rel="stylesheet" href="{{url_for('static', filename='style-checker.css')}}" type="text/css" />
+<script type="text/javascript" src="{{url_for('static', filename='jquery-1.3.2.min.js')}}"></script>
+<script type="text/javascript" src="{{url_for('static', filename='jquery.tablesorter.js')}}"></script>
 <script type="text/javascript">
 var extracted_data = function(node)
 {
@@ -23,7 +23,7 @@ jQuery( document ).ready(function( $ ) {
 <title>checker</title>
 </head>
 <body>
-<div class="header" id="main-title"><a href="/checker/" title="checker">checker</a></div>
+<div class="header" id="main-title"><a href="{{url_for('main')}}" title="checker">checker</a></div>
 {{ text }}
 <div id="footer">
 <div id="meta-info">
