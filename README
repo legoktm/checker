@@ -10,3 +10,5 @@ Sometimes that fails due to <https://phabricator.wikimedia.org/T156626>. In that
 
 $ webservice stop
 $ webservice --backend=kubernetes python start
+
+Logs and exceptions can be found in ~/uwsgi.log.
