@@ -1,3 +1,4 @@
 flask
-flup
-oursql
+pymysql
+requests
+wmflabs

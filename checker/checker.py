@@ -2,23 +2,22 @@
 # Public domain; MZMcBride, 2011; Legoktm, 2014
 
 from flask import Flask, request
-import cgi
-import urllib
+import html
+import urllib.parse
 import re
-import oursql
+import requests
 import operator
-import json
 import os
+import wmflabs
 
 app = Flask(__name__)
+wmflabs.set_user_agent('checker')
 
 my_cnf = os.path.expanduser('~/replica.my.cnf')
 
 
 def database_list():
-    conn = oursql.connect(host='enwiki.labsdb',
-                          db='meta_p',
-                          read_default_file=my_cnf)
+    conn = wmflabs.connect('meta_p')
     cursor = conn.cursor()
     cursor.execute('''
     /* checker.py database_list */
@@ -35,9 +34,7 @@ def database_list():
 
 
 def choose_host_and_domain(db):
-    conn = oursql.connect(host='enwiki.labsdb',
-                          db='meta_p',
-                          read_default_file=my_cnf)
+    conn = wmflabs.connect('meta_p')
     cursor = conn.cursor()
     cursor.execute('''
     /* checker.py choose_host_and_domain */
@@ -65,9 +62,9 @@ def get_extension_namespaces(domain):
         'siprop': 'namespaces',
         'format': 'json'
     }
-    query_url = '%s/w/api.php?%s' % (domain, urllib.urlencode(params))
-    url_contents = urllib.urlopen(query_url).read()
-    parsed_content = json.loads(url_contents)
+    query_url = '%s/w/api.php' % domain
+    req = requests.get(query_url, params=params)
+    parsed_content = req.json()
     try:
         page_namespace = parsed_content['query']['proofreadnamespaces']['page']['id']
         index_namespace = parsed_content['query']['proofreadnamespaces']['index']['id']
@@ -98,7 +95,7 @@ def get_page_links(cursor, db, page_namespace, index_namespace, index_page):
     for row in cursor.fetchall():
         pl_title = row[0]
         try:
-            sort_key = int(unicode(row[0].rsplit('/', 1)[1].decode('utf-8')))
+            sort_key = int(str(row[0].rsplit('/', 1)[1]))
         except IndexError:
             sort_key = 1
         page_links.append([pl_title, sort_key])
@@ -132,7 +129,7 @@ def get_page_status(cursor, db, page_namespace, page):
     WHERE page_id = cl_from
     AND page_namespace = ?
     AND page_title = ?;
-    ''', (page_namespace, page.decode('utf-8')))
+    ''', (page_namespace, page))
     proofread_status = cursor.fetchall()
     if proofread_status:
         page_status['proofread_status'] = proofread_status[0][0].lower().replace('_', ' ')
@@ -181,7 +178,7 @@ def main():
 
     tables = []
     if host is not None and title and extension_dict:
-        conn = oursql.connect(host=host, db=db+'_p', read_default_file=my_cnf)
+        conn = wmflabs.connect(db)
         cursor = conn.cursor()
         # Eliminate LTR and RTL marks and strip extra whitespace.
         title = re.sub(r'(\xe2\x80\x8e|\xe2\x80\x8f)', '', title).strip(' ')
@@ -204,9 +201,9 @@ def main():
 %s
 </td>
 </tr>''' % (domain,
-            '%s:%s' % (urllib.quote(page_namespace_name.encode('utf-8')),
-                       urllib.quote(page_link.decode('utf-8').encode('utf-8'))),
-            cgi.escape('%s:%s' % (page_namespace_name, page_link.decode('utf-8').replace('_', ' ')), quote=True),
+            '%s:%s' % (urllib.parse.quote(page_namespace_name.encode('utf-8')),
+                       urllib.parse.quote(page_link.decode('utf-8').encode('utf-8'))),
+            html.escape('%s:%s' % (page_namespace_name, page_link.decode('utf-8').replace('_', ' ')), quote=True),
             status['proofread_status'].decode('utf-8'))
                 if status['transclusion_count'] > 0:
                     yes_rows.append(table_row)
