@@ -88,9 +88,9 @@ def get_page_links(cursor, db, page_namespace, index_namespace, index_page):
     JOIN page AS p2
     ON p2.page_title = pl_title
     AND p2.page_namespace = pl_namespace
-    WHERE pl_namespace = ?
-    AND p1.page_namespace = ?
-    AND p1.page_title = ?;
+    WHERE pl_namespace = %s
+    AND p1.page_namespace = %s
+    AND p1.page_title = %s;
     ''', (page_namespace, index_namespace, index_page))
     for row in cursor.fetchall():
         pl_title = row[0]
@@ -111,8 +111,8 @@ def get_page_status(cursor, db, page_namespace, page):
     FROM templatelinks
     JOIN page
     ON tl_from = page_id
-    WHERE tl_namespace = ?
-    AND tl_title = ?
+    WHERE tl_namespace = %s
+    AND tl_title = %s
     AND page_namespace = 0;
     ''', (page_namespace, page.decode('utf-8')))
     transclusion_count = cursor.fetchall()
@@ -127,8 +127,8 @@ def get_page_status(cursor, db, page_namespace, page):
     JOIN categorylinks
     ON cl_from = page_id
     WHERE page_id = cl_from
-    AND page_namespace = ?
-    AND page_title = ?;
+    AND page_namespace = %s
+    AND page_title = %s;
     ''', (page_namespace, page))
     proofread_status = cursor.fetchall()
     if proofread_status:
