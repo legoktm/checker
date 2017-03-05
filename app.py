@@ -209,7 +209,8 @@ def main():
         no_rows=no_rows,
         show_form=show_form,
         databases=database_list(),
-        selected_db=db
+        selected_db=db,
+        clean=lambda x: x.replace('_', ' ')
     )
 
 if __name__ == '__main__':

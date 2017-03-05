@@ -82,7 +82,7 @@ jQuery( document ).ready(function( $ ) {
         <tbody>
         {% for row in no_rows %}
             <tr>
-                <td><a href="{{row.domain}}/wiki/{{row.ns}}:{{row.title}}">{{row.ns}}:{{row.title}}</a></td>
+                <td><a href="{{row.domain}}/wiki/{{row.ns}}:{{row.title}}">{{row.ns}}:{{clean(row.title)}}</a></td>
                 <td>{{row.status}}</td>
             </tr>
         {% endfor %}
