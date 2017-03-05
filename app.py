@@ -93,7 +93,7 @@ def get_page_links(cursor, db, page_namespace, index_namespace, index_page):
     AND p1.page_title = %s;
     ''', (page_namespace, index_namespace, index_page))
     for row in cursor.fetchall():
-        pl_title = row[0]
+        pl_title = row[0].decode()
         try:
             sort_key = int(row[0].decode().rsplit('/', 1)[1])
         except IndexError:
@@ -114,7 +114,7 @@ def get_page_status(cursor, db, page_namespace, page):
     WHERE tl_namespace = %s
     AND tl_title = %s
     AND page_namespace = 0;
-    ''', (page_namespace, page.decode('utf-8')))
+    ''', (page_namespace, page))
     transclusion_count = cursor.fetchall()
     if transclusion_count:
         page_status['transclusion_count'] = int(transclusion_count[0][0])
@@ -132,7 +132,7 @@ def get_page_status(cursor, db, page_namespace, page):
     ''', (page_namespace, page))
     proofread_status = cursor.fetchall()
     if proofread_status:
-        page_status['proofread_status'] = proofread_status[0][0].lower().replace('_', ' ')
+        page_status['proofread_status'] = proofread_status[0][0].decode().lower().replace('_', ' ')
     return page_status
 
 
@@ -201,10 +201,10 @@ def main():
 %s
 </td>
 </tr>''' % (domain,
-            '%s:%s' % (urllib.parse.quote(page_namespace_name.encode('utf-8')),
-                       urllib.parse.quote(page_link.decode('utf-8').encode('utf-8'))),
-            html.escape('%s:%s' % (page_namespace_name, page_link.decode('utf-8').replace('_', ' ')), quote=True),
-            status['proofread_status'].decode('utf-8'))
+            '%s:%s' % (urllib.parse.quote(page_namespace_name),
+                       urllib.parse.quote(page_link)),
+            html.escape('%s:%s' % (page_namespace_name, page_link.replace('_', ' ')), quote=True),
+            status['proofread_status'])
                 if status['transclusion_count'] > 0:
                     yes_rows.append(table_row)
                 else:
