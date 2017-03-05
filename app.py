@@ -41,7 +41,7 @@ def choose_host_and_domain(db):
     SELECT
       url
     FROM wiki
-    WHERE dbname = ?;
+    WHERE dbname = %s;
     ''', (db,))
     result = cursor.fetchall()
     cursor.close()
