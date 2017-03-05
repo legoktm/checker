@@ -112,8 +112,11 @@ def get_page_status(cursor, db, page_namespace, page):
     SELECT
       COUNT(*)
     FROM templatelinks
+    JOIN page
+    ON tl_from = page_id
     WHERE tl_namespace = ?
-    AND tl_title = ?;
+    AND tl_title = ?
+    AND page_namespace = 0;
     ''', (page_namespace, page.decode('utf-8')))
     transclusion_count = cursor.fetchall()
     if transclusion_count:
@@ -249,9 +252,9 @@ jQuery( document ).ready(function( $ ) {
             count = 0
             for table in tables:
                 if count == 0:
-                    TEXT += '<h1 class="header" id="Transcluded"> Transcluded </h1>'
+                    TEXT += '<h1 class="header" id="Transcluded"> Transcluded to main namespace </h1>'
                 else:
-                    TEXT += '<h1 class="header" id="Not transcluded"> Not transcluded </h1>'
+                    TEXT += '<h1 class="header" id="Not transcluded"> Not transcluded to main namespace </h1>'
                 TEXT += '''\
 <table class="ck-results inner-table">
 <thead>
