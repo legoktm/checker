@@ -4,6 +4,8 @@ Follow <https://wikitech.wikimedia.org/wiki/Help:Tool_Labs/Web/Kubernetes#For_ne
 
 Deploying changes
 
+$ cd ~/www/python/src
+$ git pull
 $ webservice restart
 
 Sometimes that fails due to <https://phabricator.wikimedia.org/T156626>. In that case:
