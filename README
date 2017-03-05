@@ -1,20 +1,12 @@
 Getting started
 
-$ virtualenv --python=python2.7 venv
-$ source venv/bin/activate
-$ pip install -r requirements.txt
+Follow <https://wikitech.wikimedia.org/wiki/Help:Tool_Labs/Web/Kubernetes#For_new_projects>.
 
 Deploying changes
 
 $ webservice restart
 
-Testing (adjust commands as appropriate)
+Sometimes that fails due to <https://phabricator.wikimedia.org/T156626>. In that case:
 
-$ ssh -i ~/.ssh/id_rsa_labs -L 5000:localhost:5000 tools-login.wmflabs.org
-$ python checker/checker.py
-$ http://localhost:5000/?db=enwikisource
-
-TODO: Get http://localhost:5000/checker/?db=enwikisource working so that
-      static assets work...
-
-app.logger.debug(var)
+$ webservice stop
+$ webservice --backend=kubernetes python start
