@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 # Public domain; MZMcBride, 2011; Legoktm, 2014
 
-from flask import Flask, request
+from flask import Flask, request, render_template
 import html
 import urllib.parse
 import re
@@ -211,35 +211,6 @@ def main():
         cursor.close()
         conn.close()
 
-    TEXT += '''\
-<!doctype html>
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-<link rel="stylesheet" href="/checker/static/style-checker.css" type="text/css" />
-<script type="text/javascript" src="/checker/static/jquery-1.3.2.min.js"></script>
-<script type="text/javascript" src="/checker/static/jquery.tablesorter.js"></script>
-<script type="text/javascript">
-var extracted_data = function(node)
-{
-        var text = node.innerText || node.textContent
-        return text.substring(text.lastIndexOf('/')+1);
-}
-jQuery( document ).ready(function( $ ) {
-        $('input.focus').focus();
-        $('.ck-results').tablesorter(
-                {widgets: ['zebra'],
-                 textExtraction: extracted_data}
-        );
-}
-);
-</script>
-<title>checker</title>
-</head>
-<body>
-<div class="header" id="main-title"><a href="/checker/" title="checker">checker</a></div>\
-'''
-
     if title:
         if db and host is not None and title and extension_dict:
             TEXT += '<div id="ck-tables-wrapper">'
@@ -305,16 +276,6 @@ You didn't specify an appropriate database name.
 </table>
 </form>'''
 
-    TEXT += '''\
-<div id="footer">
-<div id="meta-info">
-<a href="https://github.com/legoktm/checker" title="source code">public domain</a>&nbsp;<b>&middot;</b>&nbsp;\
-<a href="https://meta.wikimedia.org/w/index.php?title=User_talk:MZMcBride&amp;action=edit&amp;section=new" title="Report a bug">bugs</a>
-</div>
-</div>
-</body>
-</html>
-'''
     return TEXT
 
 if __name__ == '__main__':
