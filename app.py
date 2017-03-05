@@ -7,13 +7,10 @@ import urllib.parse
 import re
 import requests
 import operator
-import os
 import wmflabs
 
 app = Flask(__name__)
 wmflabs.set_user_agent('checker')
-
-my_cnf = os.path.expanduser('~/replica.my.cnf')
 
 
 def database_list():
