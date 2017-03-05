@@ -315,7 +315,7 @@ You didn't specify an appropriate database name.
 <div id="footer">
 <div id="meta-info">
 <a href="https://github.com/legoktm/checker" title="source code">public domain</a>&nbsp;<b>&middot;</b>&nbsp;\
-<a href="http://en.wikipedia.org/w/index.php?title=User_talk:MZMcBride&amp;action=edit&amp;section=new" title="Report a bug">bugs</a>
+<a href="https://meta.wikimedia.org/w/index.php?title=User_talk:MZMcBride&amp;action=edit&amp;section=new" title="Report a bug">bugs</a>
 </div>
 </div>
 </body>
