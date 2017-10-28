@@ -1,4 +1,4 @@
 flask
 pymysql
 requests
-wmflabs
+toolforge>=4.1.0

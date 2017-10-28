@@ -5,14 +5,14 @@ from flask import Flask, request, render_template
 import re
 import requests
 import operator
-import wmflabs
+import toolforge
 
 app = Flask(__name__)
-wmflabs.set_user_agent('checker')
+toolforge.set_user_agent('checker')
 
 
 def database_list():
-    conn = wmflabs.connect('meta_p')
+    conn = toolforge.connect('meta_p')
     cursor = conn.cursor()
     cursor.execute('''
     /* checker.py database_list */
@@ -30,7 +30,7 @@ def database_list():
 
 
 def choose_host_and_domain(db):
-    conn = wmflabs.connect('meta_p')
+    conn = toolforge.connect('meta_p')
     cursor = conn.cursor()
     cursor.execute('''
     /* checker.py choose_host_and_domain */
@@ -165,7 +165,7 @@ def main():
 
     error = None
     if host is not None and title and extension_dict:
-        conn = wmflabs.connect(db)
+        conn = toolforge.connect(db)
         cursor = conn.cursor()
         # Eliminate LTR and RTL marks and strip extra whitespace.
         title = re.sub(r'(\xe2\x80\x8e|\xe2\x80\x8f)', '', title).strip(' ')
