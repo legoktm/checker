@@ -26,7 +26,7 @@ def database_list():
     cursor.close()
     conn.close()
     for database in databases:
-        yield database[0].decode()
+        yield database[0]
 
 
 def choose_host_and_domain(db):
