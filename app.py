@@ -97,6 +97,7 @@ def get_page_links(cursor, db, page_namespace, index_namespace, index_page):
         page_links.append([pl_title, sort_key])
     return page_links
 
+
 def get_page_status(cursor, db, page_namespace, page):
     page_status = {}
     # Check if the page has transclusions first
@@ -210,6 +211,7 @@ def main():
         selected_db=db,
         clean=lambda x: x.replace('_', ' ')
     )
+
 
 if __name__ == '__main__':
     app.run(debug=True)
