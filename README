@@ -1,6 +1,9 @@
 Getting started
 
-Follow <https://wikitech.wikimedia.org/wiki/Help:Tool_Labs/Web/Kubernetes#For_new_projects>.
+$ mkdir -p ~/www/python/src
+$ git clone https://github.com/legoktm/checker ~/www/python/src
+$ webservice python3.7 shell
+interactive$ webservice-python-bootstrap --fresh
 
 Deploying changes
 
@@ -11,6 +14,7 @@ $ webservice restart
 Sometimes that fails due to <https://phabricator.wikimedia.org/T156626>. In that case:
 
 $ webservice stop
-$ webservice --backend=kubernetes python start
+$ webservice python3.7 start
 
 Logs and exceptions can be found in ~/uwsgi.log.
+
