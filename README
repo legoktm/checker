@@ -14,7 +14,7 @@ $ webservice restart
 Sometimes that fails due to <https://phabricator.wikimedia.org/T156626>. In that case:
 
 $ webservice stop
-$ webservice python3.7 start
+$ webservice python3.7 start --canonical
 
 Logs and exceptions can be found in ~/uwsgi.log.
 
