@@ -2,7 +2,8 @@ Getting started
 
 $ mkdir -p ~/www/python/src
 $ git clone https://github.com/legoktm/checker ~/www/python/src
-$ webservice python3.7 shell
+$ ln -s ~/www/python/src/service.template ~/service.template
+$ webservice shell
 interactive$ webservice-python-bootstrap --fresh
 
 Deploying changes
@@ -14,7 +15,7 @@ $ webservice restart
 Sometimes that fails due to <https://phabricator.wikimedia.org/T156626>. In that case:
 
 $ webservice stop
-$ webservice python3.7 start --canonical
+$ webservice start
 
 Logs and exceptions can be found in ~/uwsgi.log.
 

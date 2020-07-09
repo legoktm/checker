@@ -1,0 +1,4 @@
+backend: kubernetes
+canonical: true
+type: python3.7
+replicas: 2
