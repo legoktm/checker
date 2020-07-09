@@ -2,15 +2,23 @@
 # Public domain; MZMcBride, 2011; Legoktm, 2014
 
 from flask import Flask, request, render_template
+from flask_caching import Cache
 import re
 import requests
 import operator
 import toolforge
 
 app = Flask(__name__)
+cache = Cache(
+    app,
+    config={'CACHE_TYPE': 'redis',
+            'CACHE_REDIS_HOST': 'tools-redis',
+            'CACHE_KEY_PREFIX': 'tool-checker'}
+)
 toolforge.set_user_agent('checker')
 
 
+@cache.cached(timeout=60*60*24)
 def database_list():
     conn = toolforge.connect('meta_p')
     cursor = conn.cursor()
@@ -29,6 +37,7 @@ def database_list():
         yield database[0]
 
 
+@cache.memoize(timeout=60*60*24)
 def choose_host_and_domain(db):
     conn = toolforge.connect('meta_p')
     cursor = conn.cursor()
@@ -50,6 +59,7 @@ def choose_host_and_domain(db):
     return None
 
 
+@cache.memoize(timeout=60*60*24)
 def get_extension_namespaces(domain):
     params = {
         'action': 'query',

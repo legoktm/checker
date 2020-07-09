@@ -1,4 +1,6 @@
 flask
+flask-caching
 pymysql
+redis
 requests
 toolforge>=4.1.0
