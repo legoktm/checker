@@ -33,8 +33,10 @@ def database_list():
     databases = cursor.fetchall()
     cursor.close()
     conn.close()
+    ret = []
     for database in databases:
-        yield database[0]
+        ret.append(database[0])
+    return ret
 
 
 @cache.memoize(timeout=60*60*24)
