@@ -89,7 +89,7 @@ def get_page_links(cursor, db, page_namespace, index_namespace, index_page):
     cursor.execute('''
     /* checker.py get_page_links */
     SELECT
-      pl_title
+      tl_title
     FROM templatelinks
     JOIN page AS p1
     ON tl_from = p1.page_id
