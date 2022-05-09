@@ -90,23 +90,23 @@ def get_page_links(cursor, db, page_namespace, index_namespace, index_page):
     /* checker.py get_page_links */
     SELECT
       pl_title
-    FROM pagelinks
+    FROM templatelinks
     JOIN page AS p1
-    ON pl_from = p1.page_id
+    ON tl_from = p1.page_id
     JOIN page AS p2
-    ON p2.page_title = pl_title
-    AND p2.page_namespace = pl_namespace
-    WHERE pl_namespace = %s
+    ON p2.page_title = tl_title
+    AND p2.page_namespace = tl_namespace
+    WHERE tl_namespace = %s
     AND p1.page_namespace = %s
     AND p1.page_title = %s;
     ''', (page_namespace, index_namespace, index_page))
     for row in cursor.fetchall():
-        pl_title = row[0].decode()
+        tl_title = row[0].decode()
         try:
             sort_key = int(row[0].decode().rsplit('/', 1)[1])
         except IndexError:
             sort_key = 1
-        page_links.append([pl_title, sort_key])
+        page_links.append([tl_title, sort_key])
     return page_links
 
 
