@@ -89,14 +89,16 @@ def get_page_links(cursor, db, page_namespace, index_namespace, index_page):
     cursor.execute('''
     /* checker.py get_page_links */
     SELECT
-      tl_title
+      lt_title
     FROM templatelinks
+    JOIN linktarget
+    ON tl_target_id = lt_id
     JOIN page AS p1
     ON tl_from = p1.page_id
     JOIN page AS p2
-    ON p2.page_title = tl_title
-    AND p2.page_namespace = tl_namespace
-    WHERE tl_namespace = %s
+    ON p2.page_title = lt_title
+    AND p2.page_namespace = lt_namespace
+    WHERE lt_namespace = %s
     AND p1.page_namespace = %s
     AND p1.page_title = %s;
     ''', (page_namespace, index_namespace, index_page))
@@ -118,10 +120,12 @@ def get_page_status(cursor, db, page_namespace, page):
     SELECT
       COUNT(*)
     FROM templatelinks
+    JOIN linktarget
+    ON tl_target_id = lt_id
     JOIN page
     ON tl_from = page_id
-    WHERE tl_namespace = %s
-    AND tl_title = %s
+    WHERE lt_namespace = %s
+    AND lt_title = %s
     AND page_namespace = 0;
     ''', (page_namespace, page))
     transclusion_count = cursor.fetchall()
